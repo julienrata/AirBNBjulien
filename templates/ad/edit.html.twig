@@ -1,0 +1,29 @@
+{% extends 'base.html.twig'%}
+
+{% block title %}Edition d'une annonce{% endblock %}
+{# permet d'utiliser le theme suplémentaire du formulaire #}
+{% form_theme form 'ad/_collectionImage.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <h1>Modifier l'annonce : {{ad.title}}</h1>
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-primary"> Enregistrer les modifications </button>
+        
+        {{ form_end(form) }}
+
+    </div>
+{% endblock %}
+
+
+
+{% block javascripts %}
+    <script src="/js/ad.js">
+        //function updateCounter(){
+           // const count = +$('#ad_images div.form-group')
+           // $('#widgets-counter').val(count);
+        //}
+   // updateCounter();
+    </script>
+{% endblock %}

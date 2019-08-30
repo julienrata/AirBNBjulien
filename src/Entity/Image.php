@@ -2,7 +2,11 @@
 
 namespace App\Entity;
 
+
+
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ImageRepository")
@@ -18,11 +22,13 @@ class Image
 
     /**
      * @ORM\Column(type="string", length=255)
+     *  @Assert\Url()
      */
     private $url;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min=10, minMessage="Le titre de l'image doit faire minimum 10 caractères")
      */
     private $caption;
 
