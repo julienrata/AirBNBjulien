@@ -51,7 +51,7 @@ class AdController extends AbstractController
                 $manager->persist($image);
             }
 
-
+            $ad->setAuthor($this->getUser());
             // fait persister les info dans la BDD
             $manager->persist($ad);
             $manager->flush();
