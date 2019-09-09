@@ -2,21 +2,22 @@
 
 namespace App\Controller;
 
-use App\Entity\PasswordUpdate;
 use App\Entity\User;
 use App\Form\AccountType;
-use App\Form\PasswordUpdateType;
+use App\Entity\PasswordUpdate;
 use App\Form\RegistrationType;
+use App\Form\PasswordUpdateType;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AccountController extends AbstractController
 {
@@ -84,6 +85,8 @@ class AccountController extends AbstractController
      *
      * 
      * @Route("/account/profile", name="account_profile")
+     * @IsGranted("ROLE_USER")
+     * 
      * @return Response
      */
     public function profile(Request $request, ObjectManager $manager)
@@ -112,6 +115,7 @@ class AccountController extends AbstractController
      * Permet de modifier le mot de passe
      *
      * @Route("/account/password", name="account_password")
+     * @IsGranted("ROLE_USER")
      * @return Response
      */
     public function updatePassword(Request $request, UserPasswordEncoderInterface $encoder, ObjectManager $manager)
@@ -155,7 +159,8 @@ class AccountController extends AbstractController
     
     /**
      * Permet d'afficher le profile de l'utilisateur connecté
-     *@Route("/account", name="account_index")
+     * @Route("/account", name="account_index")
+     * @IsGranted("ROLE_USER")
      * @return Response
      */
     public function myAccount(){
@@ -163,5 +168,15 @@ class AccountController extends AbstractController
             'user' => $this->getUser()
         ]);
 
+    }
+
+    /**
+     * Permet d'afficher la lits des réservations faites par le user
+     *@Route("/account/bookings", name="account_bookings")
+     * @return Response
+     */
+    public function bookings()
+    {
+        return $this->render('account/bookings.html.twig');
     }
 }
