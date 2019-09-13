@@ -85,10 +85,18 @@ class Ad
      */
     private $bookings;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="ad", orphanRemoval=true)
+     */
+    private $commentaires;
+
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
         $this->bookings = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+        $this->commentaires = new ArrayCollection();
     }
     /**
      * Permet d'initialiser le slug
@@ -103,6 +111,20 @@ class Ad
             $this->slug = $slugify->slugify($this->title);
         }
     }
+
+    public function getAvgRatings()
+    {
+       // Calculer la somme des notations
+        $sum = array_reduce($this->commentaires->toArray(), function($total,$commentaire){
+            return $total + $commentaire->getRating();
+        }, 0);
+       // Faire la division pour avoir la moyenne 
+        if(count($this->commentaires) > 0) return $sum / count($this->commentaires);
+
+        return 0;
+
+    }
+
     /**
      * Permet d'obtenir un tableau des jours qui ne sont pas disponibles pour cette annonce
      *
@@ -291,4 +313,39 @@ class Ad
 
         return $this;
     }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getCommentaires(): Collection
+    {
+        return $this->commentaires;
+    }
+
+    public function addCommentaire(Comment $commentaire): self
+    {
+        if (!$this->commentaires->contains($commentaire)) {
+            $this->commentaires[] = $commentaire;
+            $commentaire->setAd($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentaire(Comment $commentaire): self
+    {
+        if ($this->commentaires->contains($commentaire)) {
+            $this->commentaires->removeElement($commentaire);
+            // set the owning side to null (unless already changed)
+            if ($commentaire->getAd() === $this) {
+                $commentaire->setAd(null);
+            }
+        }
+
+        return $this;
+    }
+
+    
+
+
 }
